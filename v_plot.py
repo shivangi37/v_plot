@@ -1,5 +1,7 @@
-mport sys
+import sys
 from collections import defaultdict
+
+
 
 freq_dict = defaultdict(lambda: defaultdict(int))
 
@@ -18,45 +20,21 @@ for line in sys.stdin:
 
 
 
+# Creating scatter plot
+plt.figure(figsize=(8,6))
+plt.scatter(x_values, y_values, c=color_values, cmap='twilight', s=10, marker='o') #setting the color map
 
-for relative_position, length in freq_dict.items():
-    for fragment_length, frequency in length.items():
-        print(f"{relative_position}\t{fragment_length}\t{frequency}")
+# Adding labels and title
+plt.xlabel('Position')
+plt.ylabel('Length')
+plt.title('V-plot')
+
+# Step 5: Add color bar and grid
+plt.colorbar(label='frequency') #color bar and grading varies according to frequency
+
+# Display the plot
+plt.grid(True)
+plt.show()
 
 
-# Count frequencies
-count_frequencies()
 
-# Create the heatmap
-plt.figure(figsize=(15, 10))  # Increase the figure size for better visibility
-
-# Set the background color to white
-plt.gca().set_facecolor('white')
-plt.gcf().patch.set_facecolor('white')  # Set the figure background to white
-
-# Use the 'Blues' colormap for the background heatmap
-plt.imshow(frequency_matrix, extent=[x_min, x_max, y_min, y_max], origin='lower', cmap='Blues', aspect='auto', interpolation='nearest')
-
-# Overlay scatter plot with different colors based on frequency
-y_indices, x_indices = np.nonzero(frequency_matrix)  # Get the indices where the frequency is non-zero
-frequencies = frequency_matrix[y_indices, x_indices]  # Extract frequency values
-
-# Create a colormap for scatter points based on frequency
-scatter = plt.scatter(x_indices + x_min, y_indices + y_min, c=frequencies, s=500, cmap='viridis')
-
-# Add colorbar for the scatter plot
-cbar = plt.colorbar(scatter, label='Frequency', pad=0.01)
-cbar.set_label('Frequency')
-
-# Add contour lines for better visualization of the distribution
-contours = plt.contour(frequency_matrix, levels=10, extent=[x_min, x_max, y_min, y_max], colors='black', linewidths=2)  # Add thicker contours
-plt.clabel(contours, inline=True, fontsize=10, fmt='%.0f')  # Label contours
-
-# Add titles and labels
-plt.title('V PLOT GRAPH', fontsize=18)
-plt.xlabel('X Coordinate', fontsize=14)
-plt.ylabel('Y Coordinate', fontsize=14)
-
-# Save the heatmap as an image with a white background
-plt.savefig('v_plot_colored_frequency.png', bbox_inches='tight', facecolor='white', dpi=300)
-plt()
