@@ -1,40 +1,28 @@
-import sys
-import matplotlib.pyplot as plt
-import numpy as np
+mport sys
+from collections import defaultdict
 
-# Define the matrix dimensions
-x_min, x_max = -500, 500
-y_min, y_max = 0, 500
-rows = y_max - y_min + 1  # Number of rows (501)
-cols = x_max - x_min + 1  # Number of columns (1001)
+freq_dict = defaultdict(lambda: defaultdict(int))
 
-# Create a 2D matrix initialized to zero
-frequency_matrix = np.zeros((rows, cols))
+for line in sys.stdin:
+    column = line.strip().split('\t')
 
-# Function to convert (x, y) coordinates to matrix indices
-def to_matrix_indices(x, y):
-    # Map x from [-500, 500] to [0, 1000] for columns
-    col = x - x_min
-    # Map y from [0, 500] to [0, 500] for rows
-    row = y - y_min
-    return row, col
+    start_pos1 = int(column[2])
+    end_pos1 = int(column[3])
+    start_pos2 = int(column[8])
+    end_pos2 = int(column[9])
 
-# Function to count frequencies from example coordinates
-def count_frequencies():
-    # Example coordinates for frequency counting (replace this with your actual data)
-    default_coordinates = [
-        (-500, 0), (-400, 100), (0, 250), (200, 400), (500, 500),
-        (-250, 250), (100, 100), (300, 450), (-100, 150), (0, 500),
-        (-500, 500), (0, 0), (250, 250), (400, 0), (450, 200)
-    ]
+    fragment_length = int(column[11])
+    relative_position = ((start_pos2 + end_pos2) / 2) - ((start_pos1 + end_pos1) / 2)
+    if -500 <= relative_position <= 500:
+        freq_dict[relative_position][fragment_length] += 1
 
-    for x, y in default_coordinates:
-        # Make sure the coordinates are within bounds
-        if x_min <= x <= x_max and y_min <= y <= y_max:
-            # Get matrix indices for the coordinates
-            row_idx, col_idx = to_matrix_indices(x, y)
-            # Increment the corresponding cell in the matrix, scaling up to make points larger
-            frequency_matrix[row_idx][col_idx] += 10  # Increase the scale factor to make the points stand out
+
+
+
+for relative_position, length in freq_dict.items():
+    for fragment_length, frequency in length.items():
+        print(f"{relative_position}\t{fragment_length}\t{frequency}")
+
 
 # Count frequencies
 count_frequencies()
@@ -71,4 +59,4 @@ plt.ylabel('Y Coordinate', fontsize=14)
 
 # Save the heatmap as an image with a white background
 plt.savefig('v_plot_colored_frequency.png', bbox_inches='tight', facecolor='white', dpi=300)
-plt.show()
+plt()
